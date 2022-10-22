@@ -1,24 +1,29 @@
+use rustyline::Editor;
 use std::error;
-use std::io::{self, Write};
 
 use crab_shell;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
     let mut shell = unsafe { crab_shell::Shell::init() };
-    let stdin = io::stdin();
+    let mut rl = Editor::<()>::new()?;
     loop {
-        let mut buffer = String::new();
+        let readline = rl.readline("$ ");
 
-        print!("\r$ ");
-        io::stdout().flush().unwrap();
-
-        stdin.read_line(&mut buffer)?;
-        buffer = buffer.trim_end().to_string();
-
-        match buffer.as_str() {
-            "quit" | "exit" => return Ok(()),
-            "" => {}
-            _ => shell.launch_process(buffer)?,
+        match readline {
+            Ok(line) => {
+                match line.trim_end() {
+                    "quit" | "exit" => return Ok(()),
+                    "" => {}
+                    "history" => {
+                        for (i, h) in rl.history().iter().enumerate() {
+                            println!("{}: {}", i, h);
+                        }
+                    }
+                    _ => shell.launch_process(line.clone())?,
+                }
+                rl.add_history_entry(line);
+            }
+            Err(_) => {}
         }
     }
 }
