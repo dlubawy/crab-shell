@@ -8,3 +8,10 @@ edition = "2021"
 [dependencies]
 libc = "0.2"
 rustyline = "10.0.0"
+
+[profile.release]
+strip = true  # Automatically strip symbols from the binary.
+opt-level = "z"  # Optimize for size.
+lto = true
+codegen-units = 1
+panic = "abort"
