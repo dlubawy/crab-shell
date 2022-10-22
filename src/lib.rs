@@ -139,6 +139,9 @@ impl fmt::Display for Shell {
 }
 
 fn is_valid_command(program: &str) -> bool {
+    if let "." | "./" | ".." | "../" = program {
+        return false;
+    }
     if let Ok(path) = env::var("PATH") {
         for p in path.split(":") {
             let p_str = format!("{}/{}", p, program);
