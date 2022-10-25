@@ -9,7 +9,37 @@ pub Statement: ast::Stmt = {
 
 Cmd: ast::Cmd = {
     Word => ast::Cmd::new(<>),
+    "\"" <w:Word*> "\"" => {
+        let mut s = String::from("");
+        for word in w.iter() {
+            s = format!("{} {}", s, word);
+        }
+        ast::Cmd::new(s)
+    },
+    "'" <w:Word*> "'" => {
+        let mut s = String::from("");
+        for word in w.iter() {
+            s = format!("{} {}", s, word);
+        }
+        ast::Cmd::new(s)
+    },
     <w:Word> <mut c:Cmd> => {c.push(w); c},
+    "\"" <w:Word*> "\"" <mut c:Cmd> => {
+        let mut s = String::from("");
+        for word in w.iter() {
+            s = format!("{} {}", s, word);
+        }
+        c.push(s);
+        c
+    },
+    "'" <w:Word*> "'" <mut c:Cmd> => {
+        let mut s = String::from("");
+        for word in w.iter() {
+            s = format!("{} {}", s, word);
+        }
+        c.push(s);
+        c
+    },
 };
 
 End: ast::Line = {
