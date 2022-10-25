@@ -1,0 +1,24 @@
+use crate::ast;
+
+grammar;
+
+pub Statement: ast::Stmt = {
+    Cmd => ast::Stmt::new(<>),
+    <c:Cmd> <e:End> <mut s:Statement> => {s.new_cmd(c, e); s}
+}
+
+Cmd: ast::Cmd = {
+    Word => ast::Cmd::new(<>),
+    <w:Word> <mut c:Cmd> => {c.push(w); c},
+};
+
+End: ast::Line = {
+    ";" => ast::Line::End,
+    "&" => ast::Line::Bg,
+}
+Word: String = {
+    r"[\w+\-_./]+" => <>.to_string(),
+    ! => String::from(""),
+}
+
+// vim: ft=rust
