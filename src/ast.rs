@@ -28,6 +28,16 @@ impl Stmt {
             Line::Bg => self.cmds.push((Some(c), true)),
         }
     }
+
+    pub fn pop(&mut self) -> Option<(Cmd, bool)> {
+        match self.cmds.pop() {
+            Some((cmd, bg)) => match cmd {
+                Some(c) => Some((c, bg)),
+                None => None,
+            },
+            None => None,
+        }
+    }
 }
 
 impl fmt::Display for Stmt {
@@ -50,7 +60,7 @@ impl fmt::Display for Stmt {
 }
 
 pub struct Cmd {
-    first: String,
+    pub first: String,
     args: Vec<String>,
 }
 
