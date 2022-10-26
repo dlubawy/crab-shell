@@ -61,7 +61,7 @@ impl fmt::Display for Stmt {
 
 pub struct Cmd {
     pub first: String,
-    args: Vec<String>,
+    pub args: Vec<String>,
 }
 
 impl Cmd {
@@ -73,7 +73,8 @@ impl Cmd {
     }
 
     pub fn push(&mut self, s: String) {
-        self.args.push(s);
+        self.args.push(self.first.clone());
+        self.first = s.clone();
     }
 }
 

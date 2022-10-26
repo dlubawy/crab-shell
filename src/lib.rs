@@ -6,6 +6,8 @@ use std::os::unix::fs::PermissionsExt;
 use std::os::unix::process::CommandExt;
 use std::process;
 
+pub mod ast;
+
 use libc;
 
 pub struct Shell {
@@ -79,19 +81,15 @@ impl Shell {
         }
     }
 
-    pub fn launch_process(&mut self, argv: String) -> Result<(), Box<dyn Error>> {
+    pub fn launch_process(&mut self, mut cmd: ast::Cmd, bg: bool) -> Result<(), Box<dyn Error>> {
         let mut command = process::Command::new("");
-        for (i, arg) in argv.split_whitespace().enumerate() {
-            if i == 0 {
-                if is_valid_command(arg) {
-                    command = process::Command::new(arg);
-                } else {
-                    println!("{arg}: command not found");
-                    return Ok(());
-                }
-            } else {
-                command.arg(arg);
-            }
+        if is_valid_command(&cmd.first) {
+            command = process::Command::new(cmd.first);
+            cmd.args.reverse();
+            command.args(cmd.args);
+        } else {
+            println!("{}: command not found", cmd.first);
+            return Ok(());
         }
         unsafe {
             if self.is_interactive {

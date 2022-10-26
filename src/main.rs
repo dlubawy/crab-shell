@@ -6,7 +6,6 @@ use std::error;
 
 use crab_shell;
 
-pub mod ast;
 lalrpop_mod!(pub parser);
 
 fn main() -> Result<(), Box<dyn error::Error>> {
@@ -31,8 +30,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                                 }
                             }
                             _ => {
-                                //TODO: shell.launch_process(c, bg)?,
-                                println!("{}", c);
+                                shell.launch_process(c, bg)?;
+                                //println!("first: {}, args: {}", c.first, c.args.join(" "));
                             }
                         },
                         None => break,
