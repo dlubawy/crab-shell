@@ -17,7 +17,12 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
         match readline {
             Ok(line) => {
-                let mut stmt = statement_parser.parse(line.as_str()).unwrap();
+                let mut stmt =
+                    statement_parser
+                        .parse(line.as_str())
+                        .unwrap_or(crab_shell::ast::Stmt::new(crab_shell::ast::Cmd::new(
+                            String::new(),
+                        )));
                 loop {
                     let cmd = stmt.pop();
                     match cmd {
